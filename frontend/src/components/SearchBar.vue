@@ -16,18 +16,25 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { computed } from 'vue'
 import { useLinksStore } from '../stores/links'
 
 const linksStore = useLinksStore()
-const searchText = ref(linksStore.searchQuery)
+
+// Bind directly to the shared selection so restoring from storage (refresh /
+// switching back from the board) keeps the input in sync as well.
+const searchText = computed({
+  get: () => linksStore.searchQuery,
+  set: (value) => {
+    linksStore.searchQuery = value
+  },
+})
 
 function handleSearch() {
   linksStore.setSearch(searchText.value)
 }
 
 function handleClear() {
-  searchText.value = ''
   linksStore.setSearch('')
 }
 </script>
